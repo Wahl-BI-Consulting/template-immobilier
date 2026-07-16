@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Rive et Associés — agence immobilière lémanique. Démonstration réalisée par Wahl BI Consulting.">
+<link rel="icon" href="data:image/svg+xml,<svg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'><text%20y='.9em'%20font-size='90'>🏠</text></svg>">
+<title>Rive &amp; Associés — Immobilier, Lémanique</title>
+<style>
+  /* ============================================================
+     RIVE & ASSOCIÉS — démonstration immobilier
+     Concept : « le dossier d'architecte » — tout au trait (SVG).
+     Palette : Forêt & calque.
+     ============================================================ */
+
+  :root{
+    color-scheme: light dark;
+
+    /* — teintes brutes — */
+    --paper:      #F6F3EC;  /* calque / blanc cassé chaud */
+    --bone:       #ECE7DA;
+    --forest:     #16362A;  /* vert forêt profond */
+    --forest-2:   #2E5544;
+    --grege:      #877F6E;  /* gris chaud, taupe */
+    --brass:      #9C7734;  /* laiton, accent premium (rare) */
+    --ink:        #17180F;
+
+    /* — tokens sémantiques (thème clair) — */
+    --bg:         var(--paper);
+    --surface:    #FBFAF5;
+    --surface-2:  var(--bone);
+    --text:       var(--ink);
+    --text-muted: #56523F;
+    --brand:      var(--forest);
+    --brand-soft: var(--forest-2);
+    --accent:     var(--brass);
+    --accent-bright:#B8923F;
+    --line:       rgba(23,24,15,.14);
+    --line-2:     rgba(23,24,15,.30);
+    --invert-bg:  var(--forest);
+    --invert-surf:#1B4032;
+    --invert-text:#EDE8DA;
+    --invert-muted:#A7B4A8;
+    --focus:      var(--brass);
+
+    --maxw: 1160px;
+    --gutter: clamp(20px, 5vw, 64px);
+    --radius: 4px;
+    --radius-lg: 10px;
+
+    --serif: ui-serif, Georgia, "Times New Roman", "Iowan Old Style", serif;
+    --sans:  ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono:  ui-monospace, "SFMono-Regular", "Cascadia Mono", Menlo, Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:         #0F1A15;
+      --surface:    #13231B;
+      --surface-2:  #172C22;
+      --text:       #ECE7DA;
+      --text-muted: #A3AA9C;
+      --brand:      #86BBA1;
+      --brand-soft: #A9CBBB;
+      --accent:     #CBA65C;
+      --accent-bright:#DCB86B;
+      --line:       rgba(236,231,218,.14);
+      --line-2:     rgba(236,231,218,.26);
+      --invert-bg:  #0A130F;
+      --invert-surf:#122019;
+      --invert-text:#ECE7DA;
+      --invert-muted:#94A093;
+      --focus:      #DCB86B;
+    }
+  }
+  /* viewer toggle wins in both directions */
+  :root[data-theme="light"]{
+    --bg: var(--paper); --surface:#FBFAF5; --surface-2:var(--bone);
+    --text:var(--ink); --text-muted:#56523F; --brand:var(--forest);
+    --brand-soft:var(--forest-2); --accent:var(--brass); --accent-bright:#B8923F;
+    --line:rgba(23,24,15,.14); --line-2:rgba(23,24,15,.30);
+    --invert-bg:var(--forest); --invert-surf:#1B4032; --invert-text:#EDE8DA;
+    --invert-muted:#A7B4A8; --focus:var(--brass);
+  }
+  :root[data-theme="dark"]{
+    --bg:#0F1A15; --surface:#13231B; --surface-2:#172C22;
+    --text:#ECE7DA; --text-muted:#A3AA9C; --brand:#86BBA1;
+    --brand-soft:#A9CBBB; --accent:#CBA65C; --accent-bright:#DCB86B;
+    --line:rgba(236,231,218,.14); --line-2:rgba(236,231,218,.26);
+    --invert-bg:#0A130F; --invert-surf:#122019; --invert-text:#ECE7DA;
+    --invert-muted:#94A093; --focus:#DCB86B;
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html{ -webkit-text-size-adjust:100%; scroll-behavior:smooth; }
+  @media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } }
+
+  body{ margin:0; }
+  .page{
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: clamp(15px, 0.55vw + 13px, 17px);
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  /* faint blueprint grid, ambient */
+  .page::before{
+    content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 46px 46px;
+    opacity:.35;
+    mask-image: radial-gradient(120% 90% at 50% 0%, #000 30%, transparent 90%);
+  }
+  .page > *{ position:relative; z-index:1; }
+
+  a{ color: inherit; }
+  img,svg{ max-width:100%; }
+
+  .wrap{ max-width: var(--maxw); margin-inline:auto; padding-inline: var(--gutter); }
+
+  /* ---------- typography ---------- */
+  h1,h2,h3{ font-family: var(--serif); font-weight:600; color: var(--brand); margin:0;
+    text-wrap: balance; letter-spacing:-.015em; line-height:1.06; }
+  .eyebrow{
+    font-family: var(--mono); font-size:.72rem; letter-spacing:.28em;
+    text-transform:uppercase; color: var(--accent); margin:0 0 1rem;
+    display:flex; align-items:center; gap:.7rem;
+  }
+  .eyebrow::before{ content:""; width:26px; height:1px; background: var(--accent); flex:0 0 auto; }
+  p{ margin: 0 0 1rem; }
+  .lead{ font-size: 1.14rem; color: var(--text-muted); max-width: 60ch; }
+
+  /* ---------- buttons ---------- */
+  .btn{
+    --bh: #ffffff00;
+    display:inline-flex; align-items:center; gap:.6em;
+    font-family: var(--sans); font-weight:600; font-size:.94rem;
+    letter-spacing:.01em; text-decoration:none; cursor:pointer;
+    padding:.85em 1.5em; border-radius: var(--radius);
+    border:1px solid var(--brand); background: var(--brand); color: var(--paper);
+    transition: transform .18s ease, background .18s ease, box-shadow .18s ease, color .18s ease;
+  }
+  .btn:hover{ transform: translateY(-2px); box-shadow: 0 10px 24px -12px var(--brand); }
+  .btn--ghost{ background: transparent; color: var(--brand); border-color: var(--line-2); }
+  .btn--ghost:hover{ border-color: var(--brand); box-shadow:none; background: color-mix(in oklab, var(--brand) 7%, transparent); }
+  .btn .arw{ font-family: var(--mono); }
+
+  :where(a,button,input,select,textarea):focus-visible{
+    outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 3px;
+  }
+  .skip{
+    position:absolute; left:-9999px; top:0; background: var(--brand); color: var(--paper);
+    padding:.7em 1.1em; z-index:100; border-radius: 0 0 var(--radius) 0;
+  }
+  .skip:focus{ left:0; }
+
+  /* ---------- top strip / disclaimer ---------- */
+  .strip{
+    background: var(--invert-bg); color: var(--invert-muted);
+    font-family: var(--mono); font-size:.68rem; letter-spacing:.14em; text-transform:uppercase;
+    text-align:center; padding:.55em var(--gutter); border-bottom:1px solid rgba(255,255,255,.08);
+  }
+
+  /* ---------- header ---------- */
+  .site-head{
+    position: sticky; top:0; z-index:40;
+    background: color-mix(in oklab, var(--bg) 86%, transparent);
+    backdrop-filter: blur(10px) saturate(1.1);
+    border-bottom:1px solid var(--line);
+  }
+  .head-row{ display:flex; align-items:center; gap:1.5rem; height:74px; }
+  .brandmark{ display:flex; align-items:center; gap:.7rem; text-decoration:none; color: var(--brand); }
+  .brandmark svg{ width:34px; height:34px; flex:0 0 auto; }
+  .brandmark .wm{ font-family: var(--serif); font-weight:600; font-size:1.18rem; letter-spacing:.02em; line-height:1; }
+  .brandmark .wm small{ display:block; font-family: var(--mono); font-weight:400;
+    font-size:.56rem; letter-spacing:.34em; color: var(--text-muted); margin-top:.28em; text-transform:uppercase; }
+  .nav{ margin-left:auto; display:flex; align-items:center; gap:1.9rem; }
+  .nav a{ text-decoration:none; color: var(--text); font-size:.9rem; font-weight:500;
+    position:relative; padding:.2em 0; }
+  .nav a::after{ content:""; position:absolute; left:0; bottom:-2px; height:1px; width:0;
+    background: var(--accent); transition: width .22s ease; }
+  .nav a:hover::after, .nav a:focus-visible::after{ width:100%; }
+  .head-cta{ margin-left:.4rem; }
+  @media (max-width: 860px){
+    .nav a:not(.head-cta){ display:none; }
+    .nav{ gap:.8rem; margin-left:auto; }
+  }
+
+  /* ---------- section rhythm ---------- */
+  section{ padding-block: clamp(64px, 9vw, 130px); }
+  .sec-head{ max-width: 62ch; margin-bottom: clamp(34px, 5vw, 60px); }
+  .sec-head h2{ font-size: clamp(1.9rem, 3.6vw, 3rem); }
+  .sec-head p{ margin-top:1rem; color: var(--text-muted); font-size:1.08rem; }
+
+  /* ---------- hero ---------- */
+  .hero{ padding-top: clamp(48px, 6vw, 84px); padding-bottom: clamp(48px, 7vw, 96px); }
+  .hero-grid{ display:grid; grid-template-columns: 1.02fr 1.1fr; gap: clamp(28px, 5vw, 76px); align-items:center; }
+  .hero h1{ font-size: clamp(2.7rem, 6.4vw, 5.1rem); }
+  .hero h1 em{ font-style: italic; color: var(--brand-soft); }
+  .hero .lead{ margin-top: 1.6rem; }
+  .hero-cta{ display:flex; flex-wrap:wrap; gap:.9rem; margin-top: 2.1rem; }
+  .hero-meta{ display:flex; gap: clamp(20px,4vw,46px); margin-top: 3rem; padding-top:1.6rem;
+    border-top:1px solid var(--line); flex-wrap:wrap; }
+  .stat .n{ font-family: var(--serif); font-size: clamp(1.6rem,3vw,2.1rem); color: var(--brand); line-height:1;
+    font-variant-numeric: tabular-nums; }
+  .stat .l{ font-family: var(--mono); font-size:.66rem; letter-spacing:.18em; text-transform:uppercase;
+    color: var(--text-muted); margin-top:.55em; }
+
+  .hero-fig{ position:relative; }
+  .hero-fig .frame{
+    background:
+      linear-gradient(0deg, var(--surface), var(--surface));
+    border:1px solid var(--line-2); border-radius: var(--radius-lg);
+    padding: clamp(14px, 2vw, 26px); position:relative; overflow:hidden;
+    box-shadow: 0 40px 80px -60px var(--brand);
+  }
+  .hero-fig .frame::before{ /* inner blueprint grid on the sheet */
+    content:""; position:absolute; inset:0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 30px 30px; opacity:.5; pointer-events:none;
+  }
+  .hero-fig figcaption{
+    position:relative; display:flex; justify-content:space-between; align-items:baseline;
+    font-family: var(--mono); font-size:.66rem; letter-spacing:.16em; text-transform:uppercase;
+    color: var(--text-muted); margin-top:.7rem;
+  }
+  .hero-fig figcaption b{ color: var(--accent); font-weight:600; }
+
+  @media (max-width: 900px){
+    .hero-grid{ grid-template-columns: 1fr; }
+    .hero-fig{ order:-1; }
+  }
+
+  /* drawing base classes (SVG) */
+  .dwg{ color: var(--brand); display:block; width:100%; height:auto; }
+  .dwg .ln{ fill:none; stroke: currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .dwg .wall{ stroke-width:3.4; }
+  .dwg .thin{ fill:none; stroke: currentColor; stroke-width:1.3; opacity:.5; }
+  .dwg .brass{ stroke: var(--accent); }
+  .dwg .fillsoft{ fill: var(--surface-2); stroke:none; }
+  .dwg .glass{ fill: color-mix(in oklab, var(--brand) 8%, transparent); stroke:none; }
+  .dwg text.anno{ fill: var(--text-muted); font:600 11px/1 var(--mono); letter-spacing:.06em; }
+  .dwg text.annoB{ fill: var(--accent); font:600 11px/1 var(--mono); letter-spacing:.1em; }
+
+  /* hero draw-in */
+  @keyframes drawon{ to{ stroke-dashoffset:0; } }
+  @keyframes fadeup{ from{ opacity:0; transform: translateY(14px); } to{ opacity:1; transform:none; } }
+  .fade{ animation: fadeup .8s cubic-bezier(.2,.7,.2,1) both; }
+  .fade.d1{ animation-delay:.05s; } .fade.d2{ animation-delay:.16s; }
+  .fade.d3{ animation-delay:.28s; } .fade.d4{ animation-delay:.4s; }
+  .hero-fig .draw{ stroke-dasharray: 2200; stroke-dashoffset: 2200; animation: drawon 2.4s ease .25s forwards; }
+  @media (prefers-reduced-motion: reduce){
+    .fade{ animation:none; } .hero-fig .draw{ stroke-dashoffset:0; animation:none; }
+  }
+
+  /* ---------- services ---------- */
+  .svc-grid{ display:grid; grid-template-columns: repeat(4,1fr); gap: clamp(14px,1.6vw,22px); }
+  @media (max-width: 900px){ .svc-grid{ grid-template-columns: repeat(2,1fr); } }
+  @media (max-width: 520px){ .svc-grid{ grid-template-columns: 1fr; } }
+  .svc{
+    background: var(--surface); border:1px solid var(--line);
+    border-radius: var(--radius-lg); padding: 1.7rem 1.5rem 1.6rem;
+    display:flex; flex-direction:column; gap:.8rem; position:relative;
+    transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+  }
+  .svc:hover{ transform: translateY(-4px); border-color: color-mix(in oklab, var(--accent) 55%, var(--line));
+    box-shadow: 0 22px 44px -30px var(--brand); }
+  .svc .num{ font-family: var(--mono); font-size:.66rem; letter-spacing:.2em; color: var(--accent); }
+  .svc .ic{ width:52px; height:52px; color: var(--brand); }
+  .svc h3{ font-size: 1.3rem; }
+  .svc p{ font-size:.95rem; color: var(--text-muted); margin:0; }
+  .svc ul{ margin:.2rem 0 0; padding:0; list-style:none; display:flex; flex-direction:column; gap:.3rem; }
+  .svc li{ font-size:.85rem; color: var(--text-muted); padding-left:1.1em; position:relative; }
+  .svc li::before{ content:"—"; position:absolute; left:0; color: var(--accent); }
+
+  /* ---------- biens en vedette ---------- */
+  #biens{ background: var(--surface-2); border-block:1px solid var(--line); }
+  :root[data-theme="dark"] #biens{ background: var(--surface); }
+  @media (prefers-color-scheme: dark){ #biens{ background: var(--surface); } }
+
+  .bien-head{ display:flex; align-items:flex-end; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+  .prop-grid{ display:grid; grid-template-columns: repeat(2,1fr); gap: clamp(18px,2vw,28px);
+    margin-top: clamp(30px,4vw,52px); }
+  @media (max-width: 780px){ .prop-grid{ grid-template-columns:1fr; } }
+  .prop{
+    background: var(--surface); border:1px solid var(--line-2); border-radius: var(--radius-lg);
+    overflow:hidden; display:flex; flex-direction:column;
+    transition: transform .22s ease, box-shadow .22s ease;
+  }
+  :root[data-theme="dark"] .prop{ background: var(--surface-2); }
+  @media (prefers-color-scheme: dark){ .prop{ background: var(--surface-2); } }
+  .prop:hover{ transform: translateY(-5px); box-shadow: 0 30px 60px -40px var(--brand); }
+  .prop .sheet{
+    position:relative; background: var(--surface); border-bottom:1px solid var(--line);
+    padding: clamp(14px,2vw,22px);
+  }
+  :root[data-theme="dark"] .prop .sheet{ background: var(--invert-surf); }
+  @media (prefers-color-scheme: dark){ .prop .sheet{ background: var(--invert-surf); } }
+  .prop .sheet::before{
+    content:""; position:absolute; inset:0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 26px 26px; opacity:.45; pointer-events:none;
+  }
+  .prop .tag{
+    position:absolute; top:14px; left:14px; z-index:2;
+    font-family: var(--mono); font-size:.6rem; letter-spacing:.16em; text-transform:uppercase;
+    background: var(--brand); color: var(--paper); padding:.4em .7em; border-radius: 2px;
+  }
+  .prop .tag.loc{ background: var(--accent); color:#241a00; }
+  .prop .body{ padding: 1.3rem 1.4rem 1.5rem; display:flex; flex-direction:column; gap:.85rem; flex:1; }
+  .prop .loc-line{ font-family: var(--mono); font-size:.64rem; letter-spacing:.2em; text-transform:uppercase;
+    color: var(--accent); }
+  .prop h3{ font-size: 1.32rem; }
+  .prop .specs{ display:flex; gap:1.2rem; flex-wrap:wrap; margin-top:.2rem; }
+  .prop .specs span{ font-size:.82rem; color: var(--text-muted); display:flex; align-items:center; gap:.4em; }
+  .prop .specs b{ color: var(--text); font-weight:600; font-variant-numeric: tabular-nums; }
+  .prop .foot{ margin-top:auto; display:flex; align-items:baseline; justify-content:space-between;
+    padding-top:1rem; border-top:1px solid var(--line); }
+  .prop .price{ font-family: var(--serif); font-size:1.45rem; color: var(--brand); font-variant-numeric: tabular-nums; }
+  .prop .price small{ font-family: var(--mono); font-size:.6rem; letter-spacing:.14em; color: var(--text-muted);
+    display:block; text-transform:uppercase; }
+  .prop .more{ font-family: var(--mono); font-size:.72rem; letter-spacing:.1em; text-decoration:none;
+    color: var(--brand-soft); border-bottom:1px solid var(--line-2); padding-bottom:2px; }
+  .prop .more:hover{ color: var(--accent); border-color: var(--accent); }
+
+  .biens-note{ margin-top: 1.8rem; font-family: var(--mono); font-size:.68rem; letter-spacing:.06em;
+    color: var(--text-muted); }
+
+  /* ---------- agence ---------- */
+  .agency-grid{ display:grid; grid-template-columns: 1.05fr .95fr; gap: clamp(30px,5vw,70px); align-items:center; }
+  @media (max-width: 860px){ .agency-grid{ grid-template-columns:1fr; } }
+  .agency-values{ display:grid; grid-template-columns: repeat(2,1fr); gap: 1px; margin-top:2rem;
+    background: var(--line); border:1px solid var(--line); border-radius: var(--radius-lg); overflow:hidden; }
+  @media (max-width:480px){ .agency-values{ grid-template-columns:1fr; } }
+  .val{ background: var(--surface); padding:1.3rem 1.3rem; }
+  .val .k{ font-family: var(--serif); color: var(--brand); font-size:1.15rem; margin-bottom:.35rem; }
+  .val p{ font-size:.86rem; color: var(--text-muted); margin:0; }
+  .map-fig .frame{ background: var(--invert-bg); border-radius: var(--radius-lg); padding: clamp(18px,3vw,34px);
+    color: var(--invert-text); position:relative; overflow:hidden; }
+  .map-fig .frame .dwg{ color: var(--invert-text); }
+  .map-fig figcaption{ font-family: var(--mono); font-size:.64rem; letter-spacing:.16em; text-transform:uppercase;
+    color: var(--invert-muted); margin-top:1rem; }
+
+  /* ---------- estimation / contact ---------- */
+  #contact{ background: var(--invert-bg); color: var(--invert-text); }
+  #contact .eyebrow{ color: var(--accent-bright); }
+  #contact h2{ color: var(--invert-text); }
+  .contact-grid{ display:grid; grid-template-columns: .95fr 1.05fr; gap: clamp(30px,5vw,68px); }
+  @media (max-width: 860px){ .contact-grid{ grid-template-columns:1fr; } }
+  #contact .lead{ color: var(--invert-muted); }
+  .contact-info{ display:flex; flex-direction:column; gap:1.3rem; margin-top:2rem; }
+  .ci{ display:flex; gap:1rem; align-items:flex-start; }
+  .ci svg{ width:26px; height:26px; color: var(--accent-bright); flex:0 0 auto; margin-top:2px; }
+  .ci .k{ font-family: var(--mono); font-size:.62rem; letter-spacing:.2em; text-transform:uppercase;
+    color: var(--invert-muted); }
+  .ci .v{ color: var(--invert-text); font-size:1rem; }
+  .ci a{ color: var(--invert-text); text-decoration:none; border-bottom:1px solid rgba(255,255,255,.25); }
+  .ci a:hover{ border-color: var(--accent-bright); color: var(--accent-bright); }
+
+  .form-card{ background: var(--surface); color: var(--text); border-radius: var(--radius-lg);
+    padding: clamp(22px,3vw,38px); border:1px solid rgba(255,255,255,.08);
+    box-shadow: 0 40px 80px -50px rgba(0,0,0,.6); }
+  .form-card h3{ font-size:1.4rem; margin-bottom:.4rem; }
+  .form-card .sub{ font-size:.9rem; color: var(--text-muted); margin-bottom:1.6rem; }
+  .field{ display:flex; flex-direction:column; gap:.4rem; margin-bottom:1.05rem; }
+  .field-row{ display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  @media (max-width:520px){ .field-row{ grid-template-columns:1fr; } }
+  label{ font-family: var(--mono); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+    color: var(--text-muted); }
+  label .req{ color: var(--accent); }
+  input,select,textarea{
+    font-family: var(--sans); font-size:.96rem; color: var(--text);
+    background: var(--bg); border:1px solid var(--line-2); border-radius: var(--radius);
+    padding:.72em .85em; width:100%; transition: border-color .16s ease, box-shadow .16s ease;
+  }
+  input::placeholder,textarea::placeholder{ color: color-mix(in oklab, var(--text-muted) 80%, transparent); }
+  input:focus,select:focus,textarea:focus{ border-color: var(--brand); box-shadow: 0 0 0 3px color-mix(in oklab, var(--brand) 18%, transparent); outline:none; }
+  textarea{ resize:vertical; min-height:96px; }
+  .form-actions{ display:flex; align-items:center; gap:1rem; flex-wrap:wrap; margin-top:.4rem; }
+  .consent{ display:flex; gap:.6em; align-items:flex-start; font-size:.76rem; color: var(--text-muted);
+    font-family: var(--sans); letter-spacing:0; text-transform:none; margin-top:.2rem; }
+  .consent input{ width:auto; margin-top:.15em; flex:0 0 auto; }
+  .form-note{ font-family: var(--mono); font-size:.64rem; letter-spacing:.06em; color: var(--text-muted); margin:0; }
+
+  /* ---------- témoignages ---------- */
+  .quotes{ display:grid; grid-template-columns: repeat(3,1fr); gap: clamp(16px,2vw,26px); }
+  @media (max-width: 820px){ .quotes{ grid-template-columns:1fr; } }
+  .quote{ background: var(--surface); border:1px solid var(--line); border-radius: var(--radius-lg);
+    padding: 1.8rem 1.6rem; display:flex; flex-direction:column; gap:1.1rem; }
+  .quote .mark{ font-family: var(--serif); font-size:2.6rem; line-height:.4; color: var(--accent); height:.5em; }
+  .quote p{ font-family: var(--serif); font-size:1.06rem; color: var(--text); margin:0; font-style:italic; }
+  .quote .who{ display:flex; align-items:center; gap:.75rem; margin-top:auto; }
+  .quote .av{ width:38px; height:38px; border-radius:50%; background: var(--surface-2);
+    display:grid; place-items:center; font-family: var(--serif); color: var(--brand); font-size:.95rem;
+    border:1px solid var(--line-2); }
+  .quote .who .nm{ font-size:.86rem; font-weight:600; color: var(--text); }
+  .quote .who .rl{ font-family: var(--mono); font-size:.6rem; letter-spacing:.14em; text-transform:uppercase; color: var(--text-muted); }
+
+  /* ---------- mentions légales ---------- */
+  #legal{ background: var(--surface-2); border-top:1px solid var(--line); }
+  :root[data-theme="dark"] #legal{ background: var(--surface); }
+  @media (prefers-color-scheme: dark){ #legal{ background: var(--surface); } }
+  .disclaimer{
+    border:1px dashed var(--accent); border-radius: var(--radius-lg);
+    background: color-mix(in oklab, var(--accent) 8%, transparent);
+    padding: 1.2rem 1.4rem; display:flex; gap:1rem; align-items:flex-start;
+    margin-bottom: 2.5rem;
+  }
+  .disclaimer svg{ width:24px; height:24px; color: var(--accent); flex:0 0 auto; margin-top:2px; }
+  .disclaimer p{ margin:0; font-size:.95rem; color: var(--text); }
+  .disclaimer b{ color: var(--brand); }
+  .legal-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap: clamp(20px,3vw,40px); }
+  @media (max-width: 780px){ .legal-grid{ grid-template-columns:1fr; } }
+  .legal-col h3{ font-size:1rem; font-family: var(--mono); font-weight:600; letter-spacing:.1em;
+    text-transform:uppercase; color: var(--accent); margin-bottom:.9rem; }
+  .legal-col p{ font-size:.86rem; color: var(--text-muted); margin:0 0 .5rem; }
+  .legal-col b{ color: var(--text); font-weight:600; }
+
+  /* ---------- footer ---------- */
+  .site-foot{ background: var(--invert-bg); color: var(--invert-muted); }
+  .foot-top{ display:flex; justify-content:space-between; gap:2rem; flex-wrap:wrap;
+    padding-block: clamp(40px,5vw,64px); border-bottom:1px solid rgba(255,255,255,.09); }
+  .foot-brand{ display:flex; align-items:center; gap:.8rem; color: var(--invert-text); }
+  .foot-brand svg{ width:38px; height:38px; }
+  .foot-brand .wm{ font-family: var(--serif); font-size:1.2rem; }
+  .foot-brand small{ display:block; font-family: var(--mono); font-size:.56rem; letter-spacing:.3em;
+    text-transform:uppercase; color: var(--invert-muted); margin-top:.3em; }
+  .foot-nav{ display:flex; gap:1.6rem; flex-wrap:wrap; align-items:center; }
+  .foot-nav a{ color: var(--invert-muted); text-decoration:none; font-size:.86rem; }
+  .foot-nav a:hover{ color: var(--invert-text); }
+  .foot-bottom{ display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap;
+    padding-block: 1.5rem; font-size:.78rem; }
+  .credit{ font-family: var(--sans); color: var(--invert-muted); }
+  .credit a{ color: var(--accent-bright); text-decoration:none; font-weight:600; border-bottom:1px solid transparent; }
+  .credit a:hover{ border-color: var(--accent-bright); }
+  .foot-bottom .fine{ font-family: var(--mono); font-size:.66rem; letter-spacing:.08em; color: var(--invert-muted); }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <a class="skip" href="#main">Aller au contenu principal</a>
+
+  <div class="strip" role="note">
+    Site de démonstration fictif — conçu par Wahl BI Consulting
+  </div>
+
+  <!-- ================= HEADER ================= -->
+  <header class="site-head">
+    <div class="wrap head-row">
+      <a class="brandmark" href="#main" aria-label="Rive &amp; Associés — accueil">
+        <svg viewBox="0 0 40 40" role="img" aria-hidden="true">
+          <circle cx="20" cy="20" r="18.5" fill="none" stroke="currentColor" stroke-width="1.3" opacity=".4"/>
+          <path d="M7 25 L20 12 L33 25" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M11 25 L11 30 M29 25 L29 30" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M6 30 Q13 27 20 30 T34 30" fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <span class="wm">Rive &amp; Associés<small>Immobilier lémanique</small></span>
+      </a>
+      <nav class="nav" aria-label="Navigation principale">
+        <a href="#services">Services</a>
+        <a href="#biens">Biens</a>
+        <a href="#agence">L'agence</a>
+        <a href="#contact">Contact</a>
+        <a class="btn head-cta" href="#contact">Estimer mon bien</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ================= HERO ================= -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow fade d1">Vente · Location · Gérance · Estimation</p>
+          <h1 id="hero-title" class="fade d2">L'immobilier lémanique, dessiné <em>au trait juste</em>.</h1>
+          <p class="lead fade d3">Depuis notre étude au bord du lac, nous accompagnons propriétaires et acquéreurs
+            avec la rigueur d'un architecte&nbsp;: lecture précise du bien, du marché et de vos attentes,
+            de l'estimation à la remise des clés.</p>
+          <div class="hero-cta fade d3">
+            <a class="btn" href="#contact">Estimer mon bien <span class="arw" aria-hidden="true">→</span></a>
+            <a class="btn btn--ghost" href="#biens">Voir les biens en vedette</a>
+          </div>
+          <div class="hero-meta fade d4">
+            <div class="stat"><div class="n">28 ans</div><div class="l">au service du Léman</div></div>
+            <div class="stat"><div class="n">3 cantons</div><div class="l">Vaud · Genève · Valais</div></div>
+            <div class="stat"><div class="n">96 %</div><div class="l">mandats confiés à nouveau*</div></div>
+          </div>
+        </div>
+
+        <figure class="hero-fig fade d2">
+          <div class="frame">
+            <!-- ÉLÉVATION — villa lacustre contemporaine (dessin au trait) -->
+            <svg class="dwg" viewBox="0 0 680 500" role="img" aria-labelledby="heroDwgTitle heroDwgDesc">
+              <title id="heroDwgTitle">Élévation d'une villa contemporaine au bord du lac</title>
+              <desc id="heroDwgDesc">Dessin d'architecte au trait : villa à deux niveaux avec porte-à-faux, grandes baies vitrées et terrasse.</desc>
+
+              <!-- soleil (laiton) -->
+              <circle class="ln brass" cx="560" cy="80" r="34"/>
+              <g class="ln brass" opacity=".8">
+                <path class="draw" d="M560 30 v-14 M560 130 v14 M510 80 h-14 M610 80 h14 M524 44 l-10 -10 M596 44 l10 -10"/>
+              </g>
+
+              <!-- collines lointaines -->
+              <path class="thin" d="M0 300 Q 150 262 320 292 T 680 286"/>
+              <!-- ligne d'eau -->
+              <path class="thin" d="M0 452 h680 M40 468 q30 -6 60 0 M150 470 q26 -6 52 0 M470 466 q30 -6 60 0"/>
+
+              <!-- terrasse / dalle -->
+              <path class="ln draw" d="M120 440 h420"/>
+              <path class="thin" d="M150 440 v20 M200 440 v20 M250 440 v20 M300 440 v20 M350 440 v20 M400 440 v20 M450 440 v20 M500 440 v20"/>
+
+              <!-- volume bas -->
+              <rect class="ln draw glass" x="180" y="290" width="300" height="150"/>
+              <!-- baies vitrées rez -->
+              <path class="thin" d="M200 300 v128 M240 300 v128 M280 300 v128 M320 300 v128 M360 300 v128 M400 300 v128 M440 300 v128"/>
+              <!-- porte coulissante (rez) -->
+              <rect class="ln" x="300" y="330" width="80" height="110"/>
+              <path class="thin" d="M340 330 v110"/>
+
+              <!-- volume haut en porte-à-faux -->
+              <rect class="ln draw" x="150" y="200" width="270" height="92"/>
+              <!-- dalle toiture qui déborde -->
+              <path class="ln draw" d="M120 200 h330"/>
+              <!-- ruban de fenêtres étage -->
+              <rect class="ln glass" x="172" y="222" width="226" height="48"/>
+              <path class="thin" d="M210 222 v48 M248 222 v48 M286 222 v48 M324 222 v48 M362 222 v48"/>
+
+              <!-- pilier / refend -->
+              <path class="ln" d="M470 292 v148 M180 440 v-2"/>
+              <!-- cheminée fine -->
+              <path class="ln brass" d="M400 200 v-30 h14 v30"/>
+
+              <!-- arbre au trait -->
+              <g class="thin">
+                <path class="ln" d="M560 440 v-70" style="stroke-width:2;opacity:.65"/>
+                <circle cx="560" cy="352" r="34" style="stroke-width:1.5;opacity:.55"/>
+                <path d="M560 372 l-16 -14 M560 360 l16 -12 M560 388 l-14 -10"/>
+              </g>
+
+              <!-- cotation largeur -->
+              <g>
+                <path class="ln brass" d="M150 476 h330" style="stroke-width:1.2"/>
+                <path class="ln brass" d="M150 470 v12 M480 470 v12" style="stroke-width:1.2"/>
+                <text class="annoB" x="292" y="494">14,80 m</text>
+              </g>
+              <text class="anno" x="20" y="30">A—01</text>
+              <text class="anno" x="20" y="46" style="opacity:.7">RIVE &amp; ASSOCIÉS · ÉTUDE</text>
+            </svg>
+          </div>
+          <figcaption>
+            <span>Élévation lac · échelle <b>1:120</b></span>
+            <span>Croquis d'intention — illustratif</span>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ================= SERVICES ================= -->
+    <section id="services" aria-labelledby="svc-title">
+      <div class="wrap">
+        <div class="sec-head">
+          <p class="eyebrow">Nos métiers</p>
+          <h2 id="svc-title">Quatre savoir-faire, une même exigence de précision.</h2>
+          <p>Chaque mandat démarre par une lecture attentive — du bien, de son quartier et de vos objectifs —
+            avant toute mise en marché ou décision de gestion.</p>
+        </div>
+
+        <div class="svc-grid">
+          <article class="svc">
+            <span class="num">01 / VENTE</span>
+            <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M8 40 V22 L24 9 L40 22 V40"/>
+              <path d="M18 40 V28 H30 V40"/>
+              <circle cx="24" cy="20" r="3"/>
+            </svg>
+            <h3>Vente</h3>
+            <p>Une commercialisation orchestrée, du juste prix jusqu'à la signature chez le notaire.</p>
+            <ul>
+              <li>Stratégie de prix argumentée</li>
+              <li>Mise en valeur &amp; dossier soigné</li>
+              <li>Réseau d'acquéreurs qualifiés</li>
+            </ul>
+          </article>
+
+          <article class="svc">
+            <span class="num">02 / LOCATION</span>
+            <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="9" y="14" width="30" height="26" rx="1.5"/>
+              <path d="M9 22 H39"/>
+              <path d="M16 14 V9 M32 14 V9"/>
+              <circle cx="20" cy="31" r="2.4"/><path d="M26 30 H33 M26 34 H31"/>
+            </svg>
+            <h3>Location</h3>
+            <p>Des locataires sélectionnés avec soin et des baux tenus dans les règles de l'art.</p>
+            <ul>
+              <li>Sélection &amp; vérification des dossiers</li>
+              <li>Baux &amp; états des lieux</li>
+              <li>Relais unique propriétaire ↔ locataire</li>
+            </ul>
+          </article>
+
+          <article class="svc">
+            <span class="num">03 / GÉRANCE</span>
+            <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M24 7 L39 13 V24 C39 33 32 39 24 41 C16 39 9 33 9 24 V13 Z"/>
+              <path d="M18 24 L22 28 L30 19"/>
+            </svg>
+            <h3>Gérance</h3>
+            <p>La gestion technique et administrative de votre patrimoine, en toute sérénité.</p>
+            <ul>
+              <li>Encaissements &amp; décomptes de charges</li>
+              <li>Suivi des travaux &amp; artisans</li>
+              <li>Reporting propriétaire régulier</li>
+            </ul>
+          </article>
+
+          <article class="svc">
+            <span class="num">04 / ESTIMATION</span>
+            <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="21" cy="21" r="12"/>
+              <path d="M30 30 L40 40"/>
+              <path d="M15 24 L19 20 L23 23 L28 17"/>
+            </svg>
+            <h3>Estimation</h3>
+            <p>Une évaluation gratuite et documentée, fondée sur des comparables réels du marché.</p>
+            <ul>
+              <li>Visite &amp; analyse détaillée</li>
+              <li>Étude de comparables lémaniques</li>
+              <li>Rapport écrit remis sous 5 jours</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= BIENS EN VEDETTE ================= -->
+    <section id="biens" aria-labelledby="biens-title">
+      <div class="wrap">
+        <div class="bien-head sec-head" style="margin-bottom:0;max-width:none;">
+          <div>
+            <p class="eyebrow">Sélection du moment</p>
+            <h2 id="biens-title">Biens en vedette.</h2>
+          </div>
+          <p style="max-width:34ch;color:var(--text-muted);margin:0;">
+            Une sélection illustrative de mandats — présentés au trait, plan et élévation à l'appui.
+          </p>
+        </div>
+
+        <div class="prop-grid">
+
+          <!-- Bien 1 — Appartement (plan) -->
+          <article class="prop">
+            <div class="sheet">
+              <span class="tag">À vendre</span>
+              <svg class="dwg" viewBox="0 0 380 260" role="img" aria-labelledby="p1t p1d">
+                <title id="p1t">Plan d'un appartement de 4,5 pièces</title>
+                <desc id="p1d">Plan au trait : séjour ouvert sur cuisine, deux chambres, salle de bains et entrée.</desc>
+                <!-- murs extérieurs -->
+                <rect class="ln wall" x="26" y="26" width="300" height="200"/>
+                <!-- refends -->
+                <path class="ln" d="M206 26 V226 M206 128 H326 M150 152 H206 M150 152 V226"/>
+                <!-- salle de bains -->
+                <rect class="ln" x="150" y="152" width="56" height="74"/>
+                <!-- ouvertures de portes (arcs) -->
+                <path class="thin" d="M120 226 v-2 M120 224 a30 30 0 0 0 30 -30" />
+                <path class="thin" d="M206 168 h2 M208 168 a24 24 0 0 1 -24 24"/>
+                <path class="thin" d="M240 128 v2 M240 130 a22 22 0 0 0 22 22"/>
+                <!-- meubles séjour -->
+                <path class="thin" d="M42 200 h70 v-40 h-20 v40" style="opacity:.5"/>
+                <circle class="thin" cx="150" cy="70" r="20"/>
+                <!-- cuisine (plan de travail L) -->
+                <path class="thin" d="M42 42 h72 v18 h-54 v46 h-18 z" style="opacity:.5"/>
+                <!-- lits chambres -->
+                <rect class="thin" x="222" y="42" width="44" height="66"/>
+                <path class="thin" d="M222 56 h44"/>
+                <rect class="thin" x="222" y="150" width="44" height="66"/>
+                <path class="thin" d="M222 164 h44"/>
+                <!-- fenêtres (marques sur murs) -->
+                <path class="ln brass" d="M60 26 h44 M150 26 h44 M26 90 v40 M326 60 v40 M326 150 v40" style="stroke-width:3"/>
+                <!-- labels -->
+                <text class="anno" x="52" y="128">SÉJOUR</text>
+                <text class="anno" x="60" y="40" style="opacity:.75">CUISINE</text>
+                <text class="anno" x="228" y="128">CH. 1</text>
+                <text class="anno" x="228" y="216" style="opacity:.9">CH. 2</text>
+                <text class="anno" x="158" y="196" style="font-size:9px">BAINS</text>
+                <!-- cotation -->
+                <text class="annoB" x="150" y="248">↔ 11,90 m</text>
+              </svg>
+            </div>
+            <div class="body">
+              <span class="loc-line">Lausanne · Ouchy</span>
+              <h3>Appartement contemporain, vue lac</h3>
+              <div class="specs">
+                <span><b>4,5</b> pièces</span>
+                <span><b>118</b> m²</span>
+                <span><b>2</b> chambres</span>
+                <span>Étage <b>4</b></span>
+              </div>
+              <div class="foot">
+                <div class="price">CHF 1'290'000<small>Prix de vente</small></div>
+                <a class="more" href="#contact">Détails →</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Bien 2 — Villa d'architecte (élévation) -->
+          <article class="prop">
+            <div class="sheet">
+              <span class="tag">À vendre</span>
+              <svg class="dwg" viewBox="0 0 380 260" role="img" aria-labelledby="p2t p2d">
+                <title id="p2t">Élévation d'une villa d'architecte</title>
+                <desc id="p2d">Dessin au trait d'une villa moderne à deux volumes avec grandes baies et pilotis.</desc>
+                <path class="thin" d="M20 214 h340"/>
+                <!-- volume principal -->
+                <rect class="ln glass" x="70" y="110" width="180" height="104"/>
+                <!-- volume haut décalé -->
+                <rect class="ln" x="120" y="66" width="160" height="46"/>
+                <path class="ln" d="M108 66 h184"/>
+                <!-- baies rez -->
+                <path class="thin" d="M100 110 v104 M130 110 v104 M160 110 v104 M190 110 v104 M220 110 v104"/>
+                <!-- entrée -->
+                <rect class="ln" x="150" y="160" width="40" height="54"/>
+                <!-- ruban étage -->
+                <rect class="ln glass" x="138" y="82" width="124" height="20"/>
+                <path class="thin" d="M170 82 v20 M202 82 v20 M234 82 v20"/>
+                <!-- pilotis -->
+                <path class="ln" d="M90 214 v-14 M250 214 v-14"/>
+                <!-- arbre -->
+                <path class="thin" d="M310 214 v-46" style="opacity:.6"/>
+                <circle class="thin" cx="310" cy="150" r="24" style="opacity:.5"/>
+                <!-- soleil -->
+                <circle class="ln brass" cx="320" cy="70" r="18"/>
+                <text class="anno" x="24" y="40">ÉLÉV. SUD</text>
+                <text class="annoB" x="150" y="246">1:150</text>
+              </svg>
+            </div>
+            <div class="body">
+              <span class="loc-line">Saint-Sulpice · rive</span>
+              <h3>Villa d'architecte, pieds dans l'eau</h3>
+              <div class="specs">
+                <span><b>6,5</b> pièces</span>
+                <span><b>220</b> m²</span>
+                <span>Terrain <b>820</b> m²</span>
+                <span><b>2</b> niveaux</span>
+              </div>
+              <div class="foot">
+                <div class="price">CHF 2'450'000<small>Prix de vente</small></div>
+                <a class="more" href="#contact">Détails →</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Bien 3 — Attique avec terrasse (plan) -->
+          <article class="prop">
+            <div class="sheet">
+              <span class="tag loc">À louer</span>
+              <svg class="dwg" viewBox="0 0 380 260" role="img" aria-labelledby="p3t p3d">
+                <title id="p3t">Plan d'un attique avec grande terrasse</title>
+                <desc id="p3d">Plan au trait : intérieur compact ouvert et vaste terrasse dessinée en pointillés.</desc>
+                <!-- intérieur -->
+                <rect class="ln wall" x="26" y="30" width="188" height="196"/>
+                <path class="ln" d="M138 30 V128 M138 128 H214"/>
+                <!-- sdb -->
+                <rect class="ln" x="138" y="128" width="76" height="52"/>
+                <!-- terrasse (pointillés) -->
+                <rect class="thin" x="230" y="30" width="120" height="196" style="stroke-dasharray:5 5;opacity:.7"/>
+                <!-- baie vers terrasse -->
+                <path class="ln brass" d="M214 60 v90" style="stroke-width:3"/>
+                <!-- mobilier terrasse -->
+                <circle class="thin" cx="270" cy="80" r="16" style="opacity:.5"/>
+                <path class="thin" d="M300 150 h34 v34 h-34 z" style="opacity:.45"/>
+                <path class="thin" d="M244 44 h10 M336 44 h10 M244 210 h10 M336 210 h10" style="opacity:.6"/>
+                <!-- séjour meubles -->
+                <path class="thin" d="M42 200 h64 v-34 h-18 v34" style="opacity:.5"/>
+                <circle class="thin" cx="90" cy="70" r="18"/>
+                <!-- lit -->
+                <rect class="thin" x="152" y="188" width="44" height="30"/>
+                <!-- labels -->
+                <text class="anno" x="46" y="130">SÉJOUR</text>
+                <text class="anno" x="150" y="210" style="opacity:.85">CHAMBRE</text>
+                <text class="anno" x="146" y="158" style="font-size:9px">BAINS</text>
+                <text class="annoB" x="252" y="128">TERRASSE 40 m²</text>
+              </svg>
+            </div>
+            <div class="body">
+              <span class="loc-line">Montreux · haut de la ville</span>
+              <h3>Attique lumineux, terrasse panoramique</h3>
+              <div class="specs">
+                <span><b>4,5</b> pièces</span>
+                <span><b>145</b> m²</span>
+                <span>Terrasse <b>40</b> m²</span>
+                <span>Dernier étage</span>
+              </div>
+              <div class="foot">
+                <div class="price">CHF 4'800<small>Loyer / mois + ch.</small></div>
+                <a class="more" href="#contact">Détails →</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Bien 4 — Maison de maître (élévation classique) -->
+          <article class="prop">
+            <div class="sheet">
+              <span class="tag">À vendre</span>
+              <svg class="dwg" viewBox="0 0 380 260" role="img" aria-labelledby="p4t p4d">
+                <title id="p4t">Élévation d'une maison de maître</title>
+                <desc id="p4d">Dessin au trait d'une demeure classique symétrique avec toit à deux pans, lucarnes et cheminées.</desc>
+                <path class="thin" d="M20 224 h340"/>
+                <!-- corps -->
+                <rect class="ln" x="80" y="118" width="220" height="106"/>
+                <!-- toit -->
+                <path class="ln" d="M66 118 L190 60 L314 118"/>
+                <path class="ln" d="M80 118 L80 112 M300 118 L300 112"/>
+                <!-- cheminées -->
+                <path class="ln brass" d="M120 84 v-20 h14 v14 M250 78 v-24 h14 v18"/>
+                <!-- lucarne -->
+                <path class="thin" d="M172 96 h36 v14 h-36 z M172 96 l18 -12 l18 12"/>
+                <!-- rangée fenêtres étage -->
+                <g class="ln">
+                  <rect x="100" y="132" width="26" height="34"/>
+                  <rect x="146" y="132" width="26" height="34"/>
+                  <rect x="208" y="132" width="26" height="34"/>
+                  <rect x="254" y="132" width="26" height="34"/>
+                </g>
+                <!-- rez : fenêtres + porte centrale -->
+                <g class="ln">
+                  <rect x="100" y="182" width="26" height="38"/>
+                  <rect x="146" y="182" width="26" height="38"/>
+                  <rect x="208" y="182" width="26" height="38"/>
+                  <rect x="254" y="182" width="26" height="38"/>
+                  <rect x="176" y="176" width="28" height="48"/>
+                </g>
+                <!-- meneaux -->
+                <path class="thin" d="M113 132 v34 M159 132 v34 M221 132 v34 M267 132 v34 M113 182 v38 M159 182 v38 M221 182 v38 M267 182 v38 M190 176 v48"/>
+                <!-- fronton porte -->
+                <path class="ln brass" d="M172 176 l18 -12 l18 12"/>
+                <text class="anno" x="24" y="40">ÉLÉV. RUE</text>
+                <text class="annoB" x="150" y="246">1:160</text>
+              </svg>
+            </div>
+            <div class="body">
+              <span class="loc-line">Nyon · vieille ville</span>
+              <h3>Maison de maître rénovée, jardin clos</h3>
+              <div class="specs">
+                <span><b>8</b> pièces</span>
+                <span><b>310</b> m²</span>
+                <span>Terrain <b>1'150</b> m²</span>
+                <span>1832 · rénovée</span>
+              </div>
+              <div class="foot">
+                <div class="price">CHF 3'200'000<small>Prix de vente</small></div>
+                <a class="more" href="#contact">Détails →</a>
+              </div>
+            </div>
+          </article>
+
+        </div>
+        <p class="biens-note">↳ Biens, adresses et prix présentés à titre d'illustration — aucun mandat réel n'est associé à cette page de démonstration.</p>
+      </div>
+    </section>
+
+    <!-- ================= L'AGENCE ================= -->
+    <section id="agence" aria-labelledby="agence-title">
+      <div class="wrap agency-grid">
+        <div>
+          <p class="eyebrow">L'étude</p>
+          <h2 id="agence-title" class="sec-head" style="margin-bottom:1.2rem;">Une maison de conseil, à taille humaine, ancrée sur l'arc lémanique.</h2>
+          <p class="lead" style="max-width:56ch;">Fondée sur l'idée qu'un bien se lit comme un plan — proportions, orientation,
+            usages —, l'étude réunit courtiers, gestionnaires et estimateurs autour d'une même discipline&nbsp;:
+            comprendre avant de conseiller.</p>
+          <p style="color:var(--text-muted);max-width:56ch;">De Genève au Chablais, chaque mandat est suivi
+            par un interlocuteur unique, épaulé par une connaissance fine des quartiers et des dynamiques de prix.</p>
+
+          <div class="agency-values">
+            <div class="val"><div class="k">Discrétion</div><p>Mandats confidentiels, communication maîtrisée, données protégées.</p></div>
+            <div class="val"><div class="k">Précision</div><p>Estimations documentées, comparables réels, aucune promesse en l'air.</p></div>
+            <div class="val"><div class="k">Proximité</div><p>Un seul interlocuteur, du premier rendez-vous à l'acte notarié.</p></div>
+            <div class="val"><div class="k">Ancrage</div><p>Le lac Léman et ses coteaux pour terrain, depuis près de trois décennies.</p></div>
+          </div>
+        </div>
+
+        <figure class="map-fig">
+          <div class="frame">
+            <!-- carte abstraite de l'arc lémanique au trait -->
+            <svg class="dwg" viewBox="0 0 420 340" role="img" aria-labelledby="mapt mapd">
+              <title id="mapt">Carte stylisée de l'arc lémanique</title>
+              <desc id="mapd">Tracé au trait du lac Léman avec les repères des villes desservies.</desc>
+              <!-- lac -->
+              <path class="ln" d="M40 210 C90 150 180 120 250 118 C320 116 380 140 388 176 C394 206 350 236 300 244
+                C250 252 210 236 160 244 C110 252 60 250 40 232 Z" style="stroke-width:2.2"/>
+              <path class="thin" d="M70 205 q40 -30 90 -34 M210 132 q50 -6 90 8"/>
+              <!-- reflets -->
+              <path class="thin" d="M120 220 q30 -8 60 0 M240 210 q28 -8 56 0"/>
+              <!-- villes (points laiton) -->
+              <g>
+                <circle class="ln brass" cx="150" cy="235" r="4" style="fill:var(--accent)"/>
+                <text class="anno" x="120" y="256">LAUSANNE</text>
+                <circle class="ln brass" cx="300" cy="240" r="4" style="fill:var(--accent)"/>
+                <text class="anno" x="286" y="262">MONTREUX</text>
+                <circle class="ln brass" cx="70" cy="226" r="4" style="fill:var(--accent)"/>
+                <text class="anno" x="30" y="220">GENÈVE</text>
+                <circle class="ln brass" cx="105" cy="220" r="3.4" style="fill:var(--accent)"/>
+                <text class="anno" x="92" y="206">NYON</text>
+              </g>
+              <!-- montagnes en fond -->
+              <path class="thin" d="M250 118 l24 -34 l20 24 l26 -30 l24 30" style="opacity:.5"/>
+              <!-- rose des vents -->
+              <g transform="translate(370,300)">
+                <circle class="ln brass" r="16"/>
+                <path class="ln brass" d="M0 -20 v40 M-20 0 h40"/>
+                <text class="annoB" x="-4" y="-22">N</text>
+              </g>
+            </svg>
+          </div>
+          <figcaption>Arc lémanique · secteur d'intervention (schéma indicatif)</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ================= TÉMOIGNAGES ================= -->
+    <section aria-labelledby="temo-title" style="padding-top:0;">
+      <div class="wrap">
+        <div class="sec-head">
+          <p class="eyebrow">Ils nous ont confié leur projet</p>
+          <h2 id="temo-title">Des retours à hauteur d'un chez-soi.</h2>
+        </div>
+        <div class="quotes">
+          <figure class="quote">
+            <div class="mark" aria-hidden="true">&ldquo;</div>
+            <blockquote><p>Une estimation limpide et sans esbroufe. Le bien s'est vendu au prix annoncé, en quelques semaines.</p></blockquote>
+            <figcaption class="who">
+              <span class="av" aria-hidden="true">C</span>
+              <span><span class="nm">Camille R.</span><br><span class="rl">Vente · Pully</span></span>
+            </figcaption>
+          </figure>
+          <figure class="quote">
+            <div class="mark" aria-hidden="true">&ldquo;</div>
+            <blockquote><p>Un interlocuteur unique, disponible et précis. Notre appartement a trouvé preneur sereinement.</p></blockquote>
+            <figcaption class="who">
+              <span class="av" aria-hidden="true">T</span>
+              <span><span class="nm">Thomas B.</span><br><span class="rl">Location · Vevey</span></span>
+            </figcaption>
+          </figure>
+          <figure class="quote">
+            <div class="mark" aria-hidden="true">&ldquo;</div>
+            <blockquote><p>La gérance de notre immeuble est enfin lisible&nbsp;: décomptes clairs, travaux suivis, zéro mauvaise surprise.</p></blockquote>
+            <figcaption class="who">
+              <span class="av" aria-hidden="true">S</span>
+              <span><span class="nm">Sophie M.</span><br><span class="rl">Gérance · Nyon</span></span>
+            </figcaption>
+          </figure>
+        </div>
+        <p class="biens-note">↳ Témoignages illustratifs — prénoms génériques, propos rédigés pour la démonstration.</p>
+      </div>
+    </section>
+
+    <!-- ================= ESTIMATION / CONTACT ================= -->
+    <section id="contact" aria-labelledby="contact-title">
+      <div class="wrap contact-grid">
+        <div>
+          <p class="eyebrow">Estimation &amp; contact</p>
+          <h2 id="contact-title" class="sec-head" style="margin-bottom:1.1rem;">Estimez votre bien, gratuitement et sans engagement.</h2>
+          <p class="lead">Décrivez votre bien en quelques lignes&nbsp;: un courtier vous recontacte pour convenir
+            d'une visite et vous remettre un rapport écrit, comparables à l'appui.</p>
+
+          <div class="contact-info">
+            <div class="ci">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 9 L12 3 L20 9 V20 H4 Z"/><path d="M9 20 V13 H15 V20"/></svg>
+              <div><div class="k">Étude</div><div class="v">Rue de l'Ancien-Port 12<br>1006 Lausanne, Suisse</div></div>
+            </div>
+            <div class="ci">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 4 H9 L11 9 L8 11 C9 14 10 15 13 16 L15 13 L20 15 V19 C20 20 19 21 18 21 C10 21 3 14 3 6 C3 5 4 4 5 4 Z"/></svg>
+              <div><div class="k">Téléphone</div><div class="v"><a href="tel:+41210000000">+41 21 000 00 00</a></div></div>
+            </div>
+            <div class="ci">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M3 7 L12 13 L21 7"/></svg>
+              <div><div class="k">E-mail</div><div class="v"><a href="mailto:contact@rive-associes.example">contact@rive-associes.example</a></div></div>
+            </div>
+            <div class="ci">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7 V12 L15 14"/></svg>
+              <div><div class="k">Horaires</div><div class="v">Lun–Ven 8h30–18h30 · Sam sur rendez-vous</div></div>
+            </div>
+          </div>
+        </div>
+
+        <form class="form-card" aria-labelledby="form-title" novalidate>
+          <h3 id="form-title">Demande d'estimation</h3>
+          <p class="sub">Réponse sous 24 h ouvrées. Champs marqués <span style="color:var(--accent)">*</span> requis.</p>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="f-prenom">Prénom <span class="req">*</span></label>
+              <input id="f-prenom" name="prenom" type="text" autocomplete="given-name" placeholder="Camille" required>
+            </div>
+            <div class="field">
+              <label for="f-nom">Nom <span class="req">*</span></label>
+              <input id="f-nom" name="nom" type="text" autocomplete="family-name" placeholder="Rochat" required>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="f-email">E-mail <span class="req">*</span></label>
+              <input id="f-email" name="email" type="email" autocomplete="email" placeholder="camille@exemple.ch" required>
+            </div>
+            <div class="field">
+              <label for="f-tel">Téléphone</label>
+              <input id="f-tel" name="telephone" type="tel" autocomplete="tel" placeholder="+41 79 000 00 00">
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="f-type">Type de bien <span class="req">*</span></label>
+              <select id="f-type" name="type" required>
+                <option value="" selected>Sélectionner…</option>
+                <option>Appartement</option>
+                <option>Villa / maison</option>
+                <option>Attique</option>
+                <option>Immeuble de rendement</option>
+                <option>Terrain à bâtir</option>
+                <option>Local commercial</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="f-projet">Votre projet</label>
+              <select id="f-projet" name="projet">
+                <option value="" selected>Sélectionner…</option>
+                <option>Vendre</option>
+                <option>Mettre en location</option>
+                <option>Confier en gérance</option>
+                <option>Simple estimation</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="f-adresse">Localité du bien</label>
+            <input id="f-adresse" name="adresse" type="text" autocomplete="address-level2" placeholder="Ex. Lausanne, Ouchy">
+          </div>
+
+          <div class="field">
+            <label for="f-msg">Décrivez votre bien</label>
+            <textarea id="f-msg" name="message" placeholder="Surface, nombre de pièces, année, particularités…"></textarea>
+          </div>
+
+          <label class="consent" for="f-consent">
+            <input id="f-consent" name="consent" type="checkbox">
+            J'accepte d'être recontacté·e au sujet de ma demande. Mes données ne sont utilisées qu'à cette fin.
+          </label>
+
+          <div class="form-actions">
+            <button class="btn" type="button">Demander mon estimation <span class="arw" aria-hidden="true">→</span></button>
+            <p class="form-note">Formulaire de démonstration — non fonctionnel.</p>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ================= MENTIONS LÉGALES ================= -->
+    <section id="legal" aria-labelledby="legal-title">
+      <div class="wrap">
+        <div class="disclaimer" role="note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 3 L22 20 H2 Z"/><path d="M12 10 V14"/><circle cx="12" cy="17.5" r=".6" fill="currentColor"/></svg>
+          <p><b>Site de démonstration fictif réalisé par Wahl BI Consulting — ne correspond à aucune entreprise réelle.</b>
+            « Rive &amp; Associés » est une marque inventée&nbsp;; raison sociale, adresses, coordonnées, biens, prix et
+            témoignages sont illustratifs et n'engagent personne.</p>
+        </div>
+
+        <div class="sec-head" style="margin-bottom:2rem;">
+          <p class="eyebrow">Informations légales</p>
+          <h2 id="legal-title" style="font-size:clamp(1.6rem,3vw,2.2rem);">Mentions légales</h2>
+        </div>
+
+        <div class="legal-grid">
+          <div class="legal-col">
+            <h3>Éditeur (fictif)</h3>
+            <p><b>Rive &amp; Associés Sàrl</b> (entité fictive)</p>
+            <p>Rue de l'Ancien-Port 12<br>1006 Lausanne, Suisse</p>
+            <p>N° IDE&nbsp;: CHE-000.000.000 (fictif)</p>
+            <p>Courtage soumis, le cas échéant, aux usages professionnels cantonaux.</p>
+          </div>
+          <div class="legal-col">
+            <h3>Contact (fictif)</h3>
+            <p>Téléphone&nbsp;: <b>+41 21 000 00 00</b></p>
+            <p>E-mail&nbsp;: contact@rive-associes.example</p>
+            <p>Directeur de la publication&nbsp;: la gérance (fictif)</p>
+            <p>Aucune donnée personnelle réelle n'est collectée par cette page.</p>
+          </div>
+          <div class="legal-col">
+            <h3>Hébergement</h3>
+            <p>Hébergeur générique&nbsp;: fournisseur d'hébergement web mutualisé.</p>
+            <p>Centre de données situé en Suisse (indicatif).</p>
+            <p>Contenus, plans et illustrations&nbsp;: dessins vectoriels originaux réalisés pour la démonstration.</p>
+            <p>© 2026 — usage de démonstration uniquement.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="site-foot" aria-label="Pied de page">
+    <div class="wrap">
+      <div class="foot-top">
+        <div class="foot-brand">
+          <svg viewBox="0 0 40 40" role="img" aria-hidden="true">
+            <circle cx="20" cy="20" r="18.5" fill="none" stroke="currentColor" stroke-width="1.3" opacity=".4"/>
+            <path d="M7 25 L20 12 L33 25" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M11 25 L11 30 M29 25 L29 30" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M6 30 Q13 27 20 30 T34 30" fill="none" stroke="var(--accent-bright)" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+          <div class="wm">Rive &amp; Associés<small>Immobilier lémanique — fictif</small></div>
+        </div>
+        <nav class="foot-nav" aria-label="Liens de pied de page">
+          <a href="#services">Services</a>
+          <a href="#biens">Biens</a>
+          <a href="#agence">L'agence</a>
+          <a href="#contact">Estimation</a>
+          <a href="#legal">Mentions légales</a>
+        </nav>
+      </div>
+      <div class="foot-bottom">
+        <p class="credit">Démonstration réalisée par
+          <a href="https://wahl-bi-consulting.ch" target="_blank" rel="noopener noreferrer">Wahl BI Consulting</a>.
+        </p>
+        <p class="fine">Site fictif · aucune entreprise réelle · CHF · Suisse romande</p>
+      </div>
+    </div>
+  </footer>
+</div>
+</body>
+</html>
